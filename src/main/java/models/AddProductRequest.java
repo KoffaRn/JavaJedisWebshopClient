@@ -1,2 +1,4 @@
-package models;public class AddProductRequest {
+package models;
+
+public record AddProductRequest(CartDTO cart, ProductDTO product, int quantity) {
 }
