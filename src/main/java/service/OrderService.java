@@ -11,10 +11,10 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import java.util.List;
 
 public class OrderService {
-    public static List<OrderDTO> getAllOrders(UserDTO userDTO) {
+    public static List<OrderDTO> getAllOrders(String jwt, int userId) {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet("http://localhost:8080/orders/user/" + userDTO.getUser().getId());
-            httpGet.setHeader("Authorization", "Bearer " + userDTO.getJwt());
+            HttpGet httpGet = new HttpGet("http://localhost:8080/orders/user/" + userId);
+            httpGet.setHeader("Authorization", "Bearer " + jwt);
             HttpClientResponseHandler<List<OrderDTO>> responseHandler = new ListOrderResponseHandler();
             return httpClient.execute(httpGet, responseHandler);
         } catch (Exception e) {
