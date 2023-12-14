@@ -209,18 +209,16 @@ public class Application {
             for(int i = 0; i < cart.size(); i++) {
                 double price = cart.get(i).getProduct().getPrice() * cart.get(i).getQuantity();
                 runningTotal += price;
-                System.out.println((i + 1) + ". " + cart.get(i).getProduct().getName() + " x" + cart.get(i).getQuantity() + ", " + price);
+                System.out.println(cart.get(i).getProduct().getName() + " x" + cart.get(i).getQuantity() + ", " + price);
             }
             System.out.println("Total: " + runningTotal);
-            System.out.println(cart.size() + 1 + ". Buy cart");
+            System.out.println("1. Buy cart");
             System.out.println("0. Back");
             int choice = getIntInput("Enter choice: ");
             if(choice == 0)
                 showMenu();
-            if(choice == cart.size() + 1)
+            if(choice == 1)
                 CartService.buyCart(user.getJwt(), user.getUser().getId());
-            else if(choice <= cart.size())
-                showOneProduct(cart.get(choice - 1).getProduct()).run();
             else showCart();
         };
     }
