@@ -52,7 +52,7 @@ public class Application {
                 showMenu();
             else if (choice <= users.size())
                 adminShowOneUser(users.get(choice - 1)).run();
-            else showAllUsers();
+            else showAllUsers().run();
         };
     }
 
@@ -146,7 +146,7 @@ public class Application {
                 case 0:
                     break;
                 default:
-                    changeUser();
+                    changeUser().run();
             }
         };
     }
@@ -184,7 +184,7 @@ public class Application {
                 showMenu();
             else if(choice <= orders.size())
                 showOneOrder(orders.get(choice - 1)).run();
-            else showOrders();
+            else showOrders().run();
         };
     }
 
@@ -228,7 +228,7 @@ public class Application {
                 } catch (Exception e) {
                     System.err.println("Error getting data from API: " + e.getMessage());
                 }
-            else showCart();
+            else showCart().run();
         };
     }
 
@@ -272,7 +272,7 @@ public class Application {
                 showMenu();
             else if(choice <= productMenu.size())
                 productMenu.get(choice - 1).run();
-            else showAllProducts();
+            else showAllProducts().run();
         };
     }
 
@@ -314,14 +314,13 @@ public class Application {
                 case 0:
                     break;
                 default:
-                    showOneProduct(productDTO);
+                    showOneProduct(productDTO).run();
             }
         }
     }
 
     private void addToCart(ProductDTO productDTO) {
         int quantity = getIntInput("Enter quantity: ");
-        //System.out.println( CartService.getCart(user.getJwt(), user.getUser().getId()));
         try {
             CartService.addToCart(user.getJwt(), productDTO.getId(), quantity, user.getUser().getId());
         } catch (Exception e) {
@@ -340,9 +339,7 @@ public class Application {
 
     private void adminProductMenu(ProductDTO productDTO) {
         System.out.println("1. Edit");
-        if(productDTO.isActive()) System.out.println("2. Inactivate (soft delete)");
-        if(!productDTO.isActive()) System.out.println("2. Activate");
-        System.out.println("3. Delete");
+        System.out.println("2. Delete");
         System.out.println("0. Back");
         Scanner scanner = new Scanner(System.in);
         if(scanner.hasNextInt()) {
@@ -352,15 +349,13 @@ public class Application {
                     editProduct(productDTO);
                     break;
                 case 2:
-                    toggleActive(productDTO);
+                    deleteProduct(productDTO);
                     break;
                 case 0:
                     break;
-                case 3:
-                    deleteProduct(productDTO);
-                    break;
+
                 default:
-                    showOneProduct(productDTO);
+                    showOneProduct(productDTO).run();
             }
         }
     }
@@ -385,7 +380,7 @@ public class Application {
         System.out.println("1. Name");
         System.out.println("2. Description");
         System.out.println("3. Price");
-        System.out.println("4. Active");
+        System.out.println("4. Active (false for soft delete)");
         System.out.println("0. Back");
         Scanner scanner = new Scanner(System.in);
         if(scanner.hasNextInt()) {
@@ -393,28 +388,28 @@ public class Application {
             switch (choice) {
                 case 1:
                     try {
-                        showOneProduct(ProductService.editName(user.getJwt(), getStringInput("Enter new name: "), productDTO.getId()));
+                        showOneProduct(ProductService.editName(user.getJwt(), getStringInput("Enter new name: "), productDTO.getId())).run();
                     } catch (Exception e) {
                         System.err.println("Not edited, probably present in carts or orders.");
                     }
                     break;
                 case 2:
                     try {
-                        showOneProduct(ProductService.editDescription(user.getJwt(), getStringInput("Enter new description: "), productDTO.getId()));
+                        showOneProduct(ProductService.editDescription(user.getJwt(), getStringInput("Enter new description: "), productDTO.getId())).run();
                     } catch (Exception e) {
                         System.err.println("Not edited, probably present in carts or orders.");
                     }
                     break;
                 case 3:
                     try {
-                        showOneProduct(ProductService.editPrice(user.getJwt(), getDoubleInput("Enter new price: "), productDTO.getId()));
+                        showOneProduct(ProductService.editPrice(user.getJwt(), getDoubleInput("Enter new price: "), productDTO.getId())).run();
                     } catch (Exception e) {
                         System.err.println("Not edited, probably present in carts or orders.");
                     }
                     break;
                 case 4:
                     try {
-                        showOneProduct(ProductService.editActive(user.getJwt(), getBooleanInput("Enter new active: "), productDTO.getId()));
+                        showOneProduct(ProductService.editActive(user.getJwt(), getBooleanInput("Enter new active: "), productDTO.getId())).run();
                     } catch (Exception e) {
                         System.err.println("Not edited, probably present in carts or orders.");
                     }
@@ -486,6 +481,7 @@ public class Application {
     }
 
     private boolean isAdmin(UserDTO user) {
+        if(user == null) return false;
         for(UserDTO.Role role : user.getUser().getRoles()) {
             if(role.getAuthority().equals("ADMIN")) return true;
         }

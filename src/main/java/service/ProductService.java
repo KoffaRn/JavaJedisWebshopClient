@@ -10,6 +10,7 @@ import models.UserDTO;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPatch;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -127,7 +128,25 @@ public class ProductService {
 
     }
 
-    public static void createProduct(String jwt, String name, String description, double price) {
-
+    public static boolean createProduct(String jwt, String name, String description, double price) {
+        try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            final HttpPost httpPost = new HttpPost("http://localhost:8080/products");
+            httpPost.setHeader("Content-type", "application/json");
+            ProductDTO product = ProductDTO.builder()
+                    .active(true)
+                    .description(description)
+                    .price(price)
+                    .name(name)
+                    .build();
+            Gson gson = new Gson();
+            StringEntity entity = new StringEntity(gson.toJson(product));
+            httpPost.setEntity(entity);
+            httpPost.setHeader("Authorization", "Bearer " + jwt);
+            HttpClientResponseHandler<String> responseHandler = new BasicHttpClientResponseHandler();
+            String responseBody = httpClient.execute(httpPost, responseHandler);
+            return responseBody.equals("1");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
