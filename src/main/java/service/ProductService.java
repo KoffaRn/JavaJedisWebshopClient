@@ -107,4 +107,27 @@ public class ProductService {
             throw new RuntimeException(e);
         }
     }
+    public static void setActive(String jwt, int id, boolean state) {
+        JsonPatchBuilder jsonPatchBuilder = Json.createPatchBuilder();
+        jsonPatchBuilder.replace("/active", String.valueOf(state));
+        editProduct(jwt, id, jsonPatchBuilder.build());
+    }
+
+    public static List<ProductDTO> adminGetAllProducts(String jwt) {
+        try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            final HttpGet httpGet = new HttpGet("http://localhost:8080/products/all");
+            httpGet.setHeader("Authorization", "Bearer " + jwt);
+            HttpClientResponseHandler<String> responseHandler = new BasicHttpClientResponseHandler();
+            String responseBody = httpClient.execute(httpGet, responseHandler);
+            Gson gson = new Gson();
+            return gson.fromJson(responseBody, new TypeToken<ArrayList<ProductDTO>>(){}.getType());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static void createProduct(String jwt, String name, String description, double price) {
+
+    }
 }
