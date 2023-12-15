@@ -282,7 +282,9 @@ public class Application {
             String description = getStringInput("Enter description: ");
             double price = getDoubleInput("Enter price: ");
             try {
-                ProductService.createProduct(user.getJwt(), name, description, price);
+                boolean success = ProductService.createProduct(user.getJwt(), name, description, price);
+                if(success) System.out.println("Product created successfully");
+                else System.err.println("Product creation failed");
             } catch (Exception e) {
                 System.err.println("Error getting data from API: " + e.getMessage());
             }

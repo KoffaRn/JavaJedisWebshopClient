@@ -108,12 +108,6 @@ public class ProductService {
             throw new RuntimeException(e);
         }
     }
-    public static void setActive(String jwt, int id, boolean state) {
-        JsonPatchBuilder jsonPatchBuilder = Json.createPatchBuilder();
-        jsonPatchBuilder.replace("/active", String.valueOf(state));
-        editProduct(jwt, id, jsonPatchBuilder.build());
-    }
-
     public static List<ProductDTO> adminGetAllProducts(String jwt) {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final HttpGet httpGet = new HttpGet("http://localhost:8080/products/all");

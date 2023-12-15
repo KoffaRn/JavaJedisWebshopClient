@@ -1,7 +1,6 @@
 package service;
 
 import helper.ListUserResponseHandler;
-import helper.UserResponseHandler;
 import models.UserDTO;
 import org.apache.hc.client5.http.classic.methods.*;
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
@@ -22,17 +21,6 @@ public class UserService {
             StringEntity entity = new StringEntity("{\"id\" : " + userId + ", \"password\": \"" + newPassword + "\"}");
             httpPut.setEntity(entity);
             httpClient.execute(httpPut, new BasicHttpClientResponseHandler());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static UserDTO.User getUser(String jwt, int userId) {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            final HttpGet httpGet = new HttpGet("http://localhost:8080/users/" + userId);
-            httpGet.setHeader("Authorization", "Bearer " + jwt);
-            HttpClientResponseHandler<UserDTO.User> responseHandler = new UserResponseHandler();
-            return httpClient.execute(httpGet, responseHandler);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

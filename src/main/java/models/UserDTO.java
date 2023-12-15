@@ -9,14 +9,24 @@ public class UserDTO {
     private User user;
     private String jwt;
     @Data
-    public class User {
+    public static class User {
         private int id;
         private String username;
         private ArrayList<Role> roles;
+        @Override
+        public String toString() {
+            return "User:\n" +
+                    "username='" + username + '\n' +
+                    "roles=" + roles;
+        }
     }
     @Data
-    public class Role {
+    public static class Role {
         private int id;
         private String authority;
+        @Override
+        public String toString() {
+            return authority + ", ";
+        }
     }
 }

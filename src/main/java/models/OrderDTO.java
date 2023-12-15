@@ -12,7 +12,7 @@ public class OrderDTO {
     private UserDTO.User user;
     private ArrayList<OrderItemDTO> products;
     @Data
-    public class OrderItemDTO {
+    public static class OrderItemDTO {
         private int id;
         private ProductDTO product;
         private int quantity;

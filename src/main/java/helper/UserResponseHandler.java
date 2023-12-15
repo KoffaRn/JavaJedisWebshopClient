@@ -5,8 +5,6 @@ import models.UserDTO;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
-
-import java.io.IOException;
 import java.io.InputStream;
 
 public class UserResponseHandler implements HttpClientResponseHandler<UserDTO.User> {
