@@ -15,14 +15,14 @@ public class Application {
     private boolean running;
 
     public void showMenu() {
-        System.out.println("Welcome to the webshop!");
+        System.out.println("Welcome to the web shop!");
         Map<String, Runnable> menu = new HashMap<>();
         menu.put("Show all products", showAllProducts());
         if (user == null) {
             menu.put("Login", login());
             menu.put("Register", register());
         }
-        if (user != null && isAdmin(user)) {
+        if (isAdmin(user)) {
             menu.put("Show all users", showAllUsers());
             menu.put("Show all orders", showOrders());
         }
@@ -59,7 +59,7 @@ public class Application {
     private Runnable adminShowOneUser(UserDTO.User userToChange) {
         System.out.println(userToChange);
         return () -> {
-            if (user != null && isAdmin(user)) {
+            if (isAdmin(user)) {
                 adminUserMenu(userToChange);
             }
         };
@@ -264,7 +264,7 @@ public class Application {
             if(isAdmin(user)) {
                 System.out.println((productDTOS.size() + 1) + ". Create new product");
                 productMenu.add(createProduct());
-            };
+            }
             System.out.println("0. Back");
             productMenu.add(this::showMenu);
             int choice = getIntInput("Enter choice: ");
@@ -292,7 +292,7 @@ public class Application {
     private Runnable showOneProduct(ProductDTO productDTO) {
         return () -> {
             System.out.println(productDTO);
-            if(user != null && isAdmin(user)) {
+            if(isAdmin(user)) {
                 adminProductMenu(productDTO);
             }
             else if(user != null && !isAdmin(user)) {
@@ -357,14 +357,6 @@ public class Application {
                 default:
                     showOneProduct(productDTO).run();
             }
-        }
-    }
-
-    private void toggleActive(ProductDTO productDTO) {
-        try {
-            ProductService.setActive(user.getJwt(), productDTO.getId(), !productDTO.isActive());
-        } catch (Exception e) {
-            System.err.println("Not inactivated, probably present in carts or orders.");
         }
     }
 
