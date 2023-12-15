@@ -11,4 +11,11 @@ public class ProductDTO {
     private String description;
     private double price;
     private boolean active;
+    @Override
+    public String toString() {
+        return "Product:\n" +
+                "name='" + name + '\n' +
+                "description=" + description + '\n' +
+                "price=" + price;
+    }
 }

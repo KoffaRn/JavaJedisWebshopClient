@@ -1,6 +1,6 @@
 package service;
 
-import helper.UserResponseHandler;
+import helper.UserDTOResponseHandler;
 import models.UserDTO;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
@@ -27,7 +27,7 @@ public class AuthService {
             httpPost.setHeader("Content-type", "application/json");
             String json = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
             httpPost.setEntity(new StringEntity(json));
-            HttpClientResponseHandler<UserDTO> responseHandler = new UserResponseHandler();
+            HttpClientResponseHandler<UserDTO> responseHandler = new UserDTOResponseHandler();
             return httpClient.execute(httpPost, responseHandler);
         }
     }

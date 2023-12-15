@@ -5,13 +5,11 @@ import models.ProductDTO;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
-
-import java.io.IOException;
 import java.io.InputStream;
 
 public class ProductResponseHandler implements HttpClientResponseHandler<ProductDTO> {
     @Override
-    public ProductDTO handleResponse(ClassicHttpResponse response) throws HttpException, IOException {
+    public ProductDTO handleResponse(ClassicHttpResponse response) throws HttpException {
         final int status = response.getCode();
         if (status >= 200 && status < 300) {
             try(InputStream body = response.getEntity().getContent()) {
