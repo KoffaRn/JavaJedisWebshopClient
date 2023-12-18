@@ -211,25 +211,48 @@ public class Application {
                 System.err.println(e.getMessage());
             }
             double runningTotal = 0;
+            int i = 1;
             for (CartDTO.CartItemDTO cartItemDTO : cart) {
                 double price = cartItemDTO.getProduct().getPrice() * cartItemDTO.getQuantity();
                 runningTotal += price;
-                System.out.println(cartItemDTO.getProduct().getName() + " x" + cartItemDTO.getQuantity() + ", " + price);
+                System.out.println(i + ". " + cartItemDTO.getProduct().getName() + " x" + cartItemDTO.getQuantity() + ", " + price);
+                i++;
             }
             System.out.println("Total: " + runningTotal);
             System.out.println("1. Buy cart");
+            System.out.println("2. Remove item from cart");
             System.out.println("0. Back");
             int choice = getIntInput("Enter choice: ");
-            if(choice == 0)
-                showMenu();
-            if(choice == 1)
-                try {
-                    CartService.buyCart(user.getJwt(), user.getUser().getId());
-                } catch (Exception e) {
-                    System.err.println("Error getting data from API: " + e.getMessage());
-                }
-            else showCart().run();
+            switch (choice) {
+                case 0:
+                    showMenu();
+                case 1:
+                    try {
+                        if(cart.isEmpty()) throw new Exception("Cart is empty");
+                        CartService.buyCart(user.getJwt(), user.getUser().getId());
+                    } catch (Exception e) {
+                        System.err.println("Error making operation: " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    removeItemFromCart(cart);
+                    break; 
+                default: 
+                    showCart().run();
+            }
         };
+    }
+
+    private void removeItemFromCart(List<CartDTO.CartItemDTO> cart) {
+        int choice = getIntInput("Enter item number: ");
+        if(choice <= cart.size() && choice > 0) {
+            try {
+                CartService.removeItemFromCart(user.getJwt(), cart.get(choice - 1).getId(), cart.get(choice - 1).getQuantity(), user.getUser().getId());
+            } catch (Exception e) {
+                System.err.println("Error getting data from API: " + e.getMessage());
+            }
+        }
+        else removeItemFromCart(cart);
     }
 
     private Runnable register() {
@@ -270,7 +293,7 @@ public class Application {
             int choice = getIntInput("Enter choice: ");
             if(choice == 0)
                 showMenu();
-            else if(choice <= productMenu.size())
+            else if(choice <= productMenu.size() && choice > 0)
                 productMenu.get(choice - 1).run();
             else showAllProducts().run();
         };
@@ -280,7 +303,10 @@ public class Application {
         return () -> {
             String name = getStringInput("Enter name: ");
             String description = getStringInput("Enter description: ");
-            double price = getDoubleInput("Enter price: ");
+            double price = 0;
+            while(price <= 0) {
+                price = getDoubleInput("Enter price: ");
+            }
             try {
                 boolean success = ProductService.createProduct(user.getJwt(), name, description, price);
                 if(success) System.out.println("Product created successfully");
@@ -322,7 +348,10 @@ public class Application {
     }
 
     private void addToCart(ProductDTO productDTO) {
-        int quantity = getIntInput("Enter quantity: ");
+        int quantity = 0;
+        while(quantity < 1) {
+            quantity = getIntInput("Enter quantity: ");
+        }
         try {
             CartService.addToCart(user.getJwt(), productDTO.getId(), quantity, user.getUser().getId());
         } catch (Exception e) {
@@ -342,6 +371,7 @@ public class Application {
     private void adminProductMenu(ProductDTO productDTO) {
         System.out.println("1. Edit");
         System.out.println("2. Delete");
+        System.out.println("3. Add to cart");
         System.out.println("0. Back");
         Scanner scanner = new Scanner(System.in);
         if(scanner.hasNextInt()) {
@@ -352,6 +382,9 @@ public class Application {
                     break;
                 case 2:
                     deleteProduct(productDTO);
+                    break;
+                case 3:
+                    addToCart(productDTO);
                     break;
                 case 0:
                     break;

@@ -121,13 +121,13 @@ public class ProductService {
         }
 
     }
-
     public static boolean createProduct(String jwt, String name, String description, double price) {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final HttpPost httpPost = new HttpPost("http://localhost:8080/products");
             httpPost.setHeader("Content-type", "application/json");
             ProductDTO product = ProductDTO.builder()
                     .active(true)
+                    .current(true)
                     .description(description)
                     .price(price)
                     .name(name)
