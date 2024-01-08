@@ -10,15 +10,14 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
 public class AuthService {
-    public static boolean register(String username, String password) throws Exception {
+    public static UserDTO register(String username, String password) throws Exception {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final HttpPost httpPost = new HttpPost("http://localhost:8080/auth/register");
             httpPost.setHeader("Content-type", "application/json");
             String json = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
             httpPost.setEntity(new StringEntity(json));
-            HttpClientResponseHandler<String> responseHandler = new BasicHttpClientResponseHandler();
-            String responseBody = httpClient.execute(httpPost, responseHandler);
-            return responseBody.equals("1");
+            HttpClientResponseHandler<UserDTO> responseHandler = new UserDTOResponseHandler();
+            return httpClient.execute(httpPost, responseHandler);
         }
     }
     public static UserDTO login(String username, String password) throws Exception {
