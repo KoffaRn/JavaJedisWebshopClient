@@ -57,4 +57,8 @@ public class CartService {
             throw new RuntimeException(e);
         }
     }
+
+    public static void removeItemFromCart(String jwt, int id, int quantity, int id1) {
+        addToCart(jwt, id, -quantity, id1);
+    }
 }
