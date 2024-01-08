@@ -260,11 +260,10 @@ public class Application {
             String userName = getStringInput("Enter username: ");
             String password = getStringInput("Enter password: ");
             try {
-                boolean success = AuthService.register(userName, password);
-                if(success) System.out.println("Registered successfully");
-                else System.err.println("Registration failed");
+                user = AuthService.register(userName, password);
+                System.out.println("Registered successfully");
             } catch (Exception e) {
-                System.err.println(e.getMessage());
+                System.err.println("Error registering");
             }
         };
     }

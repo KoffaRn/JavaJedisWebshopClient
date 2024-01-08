@@ -88,6 +88,7 @@ public class ProductService {
     public static ProductDTO editPrice(String jwt, double doubleInput, int productId) {
         JsonPatchBuilder jsonPatchBuilder = Json.createPatchBuilder();
         jsonPatchBuilder.replace("/price", String.valueOf(doubleInput));
+        System.out.println(jsonPatchBuilder.build().toString());
         return editProduct(jwt, productId, jsonPatchBuilder.build());
     }
 
