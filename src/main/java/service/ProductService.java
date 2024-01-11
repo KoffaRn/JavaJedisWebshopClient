@@ -48,8 +48,8 @@ public class ProductService {
         }
     }
 
-    private static ProductDTO editProduct(String jwt, int productId, JsonPatch patch) {
-        try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
+    public static ProductDTO editProduct(String jwt, int productId, JsonPatch patch) {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final HttpPatch httpPatch = new HttpPatch("http://localhost:8080/products/" + productId);
             httpPatch.setHeader("Content-type", "application/json-patch+json");
             httpPatch.setHeader("Authorization", "Bearer " + jwt);
@@ -89,7 +89,6 @@ public class ProductService {
     public static ProductDTO editPrice(String jwt, double doubleInput, int productId) {
         JsonPatchBuilder jsonPatchBuilder = Json.createPatchBuilder();
         jsonPatchBuilder.replace("/price", String.valueOf(doubleInput));
-        System.out.println(jsonPatchBuilder.build().toString());
         return editProduct(jwt, productId, jsonPatchBuilder.build());
     }
 
@@ -123,6 +122,18 @@ public class ProductService {
         }
 
     }
+
+    public static ProductDTO adminGetOneProduct(String jwt, int productId) {
+        try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            final HttpGet httpGet = new HttpGet("http://localhost:8080/products/all/" + productId);
+            httpGet.setHeader("Authorization", "Bearer " + jwt);
+            HttpClientResponseHandler<ProductDTO> responseHandler = new ProductResponseHandler();
+            return httpClient.execute(httpGet, responseHandler);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static boolean createProduct(String jwt, String name, String description, double price) {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final HttpPost httpPost = new HttpPost("http://localhost:8080/products");

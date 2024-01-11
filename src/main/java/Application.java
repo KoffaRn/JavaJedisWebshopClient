@@ -340,11 +340,11 @@ public class Application {
 
     private Runnable showOneProduct(ProductDTO productDTO) {
         return () -> {
-            System.out.println(productDTO);
             if(isAdmin(user)) {
+                System.out.println(productDTO.adminProductString());
                 adminProductMenu(productDTO);
-            }
-            else if(user != null && !isAdmin(user)) {
+            } else if(user != null) {
+                System.out.println(productDTO);
                 userProductMenu(productDTO);
             }
         };

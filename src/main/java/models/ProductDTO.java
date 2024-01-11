@@ -19,4 +19,14 @@ public class ProductDTO {
                 "description: " + description + '\n' +
                 "price: " + price;
     }
+
+    public String adminProductString() {
+        return "Product:\n" +
+                "id: " + id + '\n' +
+                "name: " + name + '\n' +
+                "description: " + description + '\n' +
+                "price: " + price + '\n' +
+                "active: " + active + '\n' +
+                "current: " + current;
+    }
 }
