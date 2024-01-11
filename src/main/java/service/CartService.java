@@ -34,6 +34,7 @@ public class CartService {
             AddProductRequest addProductRequest = new AddProductRequest(getCart(jwt, userId), product, quantity);
             Gson gson = new Gson();
             StringEntity entity = new StringEntity(gson.toJson(addProductRequest), StandardCharsets.UTF_8);
+            System.out.println("Debug: " + gson.toJson(addProductRequest));
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setEntity(entity);
             httpPost.setHeader("Authorization", "Bearer " + jwt);

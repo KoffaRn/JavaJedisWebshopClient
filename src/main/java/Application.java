@@ -24,7 +24,7 @@ public class Application {
         }
         if (isAdmin(user)) {
             menu.put("Show all users", showAllUsers());
-            menu.put("Show all orders", showOrders());
+            menu.put("Show all orders", showAllOrders());
         }
         if (user != null) {
             menu.put("Show cart", showCart());
@@ -33,6 +33,27 @@ public class Application {
             menu.put("Logout", () -> user = null);
         }
         printMenu(menu);
+    }
+
+    private Runnable showAllOrders() {
+        return () -> {
+            List<OrderDTO> orders = new ArrayList<>();
+            try {
+                orders = OrderService.getAllOrders(user.getJwt());
+            } catch (Exception e) {
+                System.err.println("Error getting data from API : " + e.getMessage());
+            }
+            for (int i = 0; i < orders.size(); i++) {
+                System.out.println((i + 1) + ". " + orders.get(i).getUser().getUsername() + " Order nr. : " + orders.get(i).getId());
+            }
+            System.out.println("0. Back");
+            int choice = getIntInput("Enter order number: ");
+            if (choice == 0)
+                showMenu();
+            else if (choice <= orders.size())
+                showOneOrder(orders.get(choice - 1)).run();
+            else showAllOrders().run();
+        };
     }
 
     private Runnable showAllUsers() {
@@ -171,7 +192,7 @@ public class Application {
         return () -> {
             List<OrderDTO> orders = new ArrayList<>();
             try{
-                orders = OrderService.getAllOrders(user.getJwt(), user.getUser().getId());
+                orders = OrderService.getOrders(user.getJwt(), user.getUser().getId());
             } catch (Exception e) {
                 System.err.println("Error getting data from API : " + e.getMessage());
             }
@@ -248,7 +269,7 @@ public class Application {
         int choice = getIntInput("Enter item number: ");
         if(choice <= cart.size() && choice > 0) {
             try {
-                CartService.removeItemFromCart(user.getJwt(), cart.get(choice - 1).getId(), cart.get(choice - 1).getQuantity(), user.getUser().getId());
+                CartService.removeItemFromCart(user.getJwt(), cart.get(choice - 1).getProduct().getId(), cart.get(choice - 1).getQuantity(), user.getUser().getId());
             } catch (Exception e) {
                 System.err.println("Error getting data from API: " + e.getMessage());
             }
@@ -261,8 +282,8 @@ public class Application {
             String userName = getStringInput("Enter username: ");
             String password = getStringInput("Enter password: ");
             try {
-                user = AuthService.register(userName, password);
-                System.out.println("Registered successfully");
+                AuthService.register(userName, password);
+                user = AuthService.login(userName, password);
             } catch (Exception e) {
                 System.err.println("Error registering");
             }
