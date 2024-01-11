@@ -21,6 +21,7 @@ import javax.json.Json;
 import javax.json.JsonPatch;
 import javax.json.JsonPatchBuilder;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class ProductService {
             final HttpPatch httpPatch = new HttpPatch("http://localhost:8080/products/" + productId);
             httpPatch.setHeader("Content-type", "application/json-patch+json");
             httpPatch.setHeader("Authorization", "Bearer " + jwt);
-            httpPatch.setEntity(new StringEntity(patch.toJsonArray().toString()));
+            httpPatch.setEntity(new StringEntity(patch.toJsonArray().toString(), StandardCharsets.UTF_8));
             HttpClientResponseHandler<ProductDTO> responseHandler = new ProductResponseHandler();
             return httpClient.execute(httpPatch, responseHandler);
         } catch (IOException e) {
@@ -134,7 +135,8 @@ public class ProductService {
                     .name(name)
                     .build();
             Gson gson = new Gson();
-            StringEntity entity = new StringEntity(gson.toJson(product));
+            System.out.println(gson.toJson(product));
+            StringEntity entity = new StringEntity(gson.toJson(product), StandardCharsets.UTF_8);
             httpPost.setEntity(entity);
             httpPost.setHeader("Authorization", "Bearer " + jwt);
             HttpClientResponseHandler<String> responseHandler = new BasicHttpClientResponseHandler();

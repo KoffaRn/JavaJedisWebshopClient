@@ -10,6 +10,7 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class UserService {
@@ -18,7 +19,7 @@ public class UserService {
             final HttpPut httpPut = new HttpPut("http://localhost:8080/users/password");
             httpPut.setHeader("Authorization", "Bearer " + jwt);
             httpPut.setHeader("Content-type", "application/json");
-            StringEntity entity = new StringEntity("{\"id\" : " + userId + ", \"password\": \"" + newPassword + "\"}");
+            StringEntity entity = new StringEntity("{\"id\" : " + userId + ", \"password\": \"" + newPassword + "\"}", StandardCharsets.UTF_8);
             httpPut.setEntity(entity);
             httpClient.execute(httpPut, new BasicHttpClientResponseHandler());
         } catch (IOException e) {
@@ -31,7 +32,7 @@ public class UserService {
             final HttpPut httpPut = new HttpPut("http://localhost:8080/users/username");
             httpPut.setHeader("Authorization", "Bearer " + jwt);
             httpPut.setHeader("Content-type", "application/json");
-            StringEntity entity = new StringEntity("{\"id\" : " + userId + ", \"username\": \"" + oldUsername + "\", \"newUsername\": \"" + newUsername + "\"}");
+            StringEntity entity = new StringEntity("{\"id\" : " + userId + ", \"username\": \"" + oldUsername + "\", \"newUsername\": \"" + newUsername + "\"}", StandardCharsets.UTF_8);
             httpPut.setEntity(entity);
             httpClient.execute(httpPut, new BasicHttpClientResponseHandler());
         } catch (IOException e) {

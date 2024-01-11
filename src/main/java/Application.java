@@ -226,6 +226,7 @@ public class Application {
             switch (choice) {
                 case 0:
                     showMenu();
+                    break;
                 case 1:
                     try {
                         if(cart.isEmpty()) throw new Exception("Cart is empty");

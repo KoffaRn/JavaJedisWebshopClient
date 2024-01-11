@@ -13,6 +13,7 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class CartService {
     public static CartDTO getCart(String jwt, int userId) {
@@ -32,7 +33,7 @@ public class CartService {
             final HttpPost httpPost = new HttpPost("http://localhost:8080/carts/addProduct");
             AddProductRequest addProductRequest = new AddProductRequest(getCart(jwt, userId), product, quantity);
             Gson gson = new Gson();
-            StringEntity entity = new StringEntity(gson.toJson(addProductRequest));
+            StringEntity entity = new StringEntity(gson.toJson(addProductRequest), StandardCharsets.UTF_8);
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setEntity(entity);
             httpPost.setHeader("Authorization", "Bearer " + jwt);
@@ -47,7 +48,7 @@ public class CartService {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final HttpPost httpPost = new HttpPost("http://localhost:8080/carts/buy");
             Gson gson = new Gson();
-            StringEntity entity = new StringEntity(gson.toJson(getCart(jwt, userId)));
+            StringEntity entity = new StringEntity(gson.toJson(getCart(jwt, userId)), StandardCharsets.UTF_8);
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Authorization", "Bearer " + jwt);
             httpPost.setEntity(entity);
